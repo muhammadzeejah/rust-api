@@ -163,7 +163,7 @@ curl -X DELETE http://localhost:8080/api/users/1
    - Verify `libpq` is installed
 
 3. **Build Fails**
-   - Verify PostgreSQL path in build.rs (Windows)
+   - Verify PostgreSQL path in build.rs
    - Check if all dependencies are installed
    - Try `cargo clean` followed by `cargo build`
 
