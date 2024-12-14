@@ -1,3 +1,4 @@
+// I received some assistance from a language model to write this document.
 
 # Rust API with PostgreSQL
 
