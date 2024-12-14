@@ -3,7 +3,6 @@ use diesel::prelude::*;
 use crate::db::DbPool;
 use crate::models::{User, NewUser};
 
-// Create
 pub async fn create_user(
     pool: web::Data<DbPool>,
     new_user: web::Json<NewUser>,
@@ -12,6 +11,7 @@ pub async fn create_user(
         let mut conn = pool.get().unwrap();
         diesel::insert_into(crate::schema::users::table)
             .values(&new_user.into_inner())
+            .returning(User::as_select())
             .get_result::<User>(&mut conn)
     })
     .await?
@@ -20,13 +20,13 @@ pub async fn create_user(
     Ok(HttpResponse::Ok().json(user))
 }
 
-// Read (all users)
 pub async fn get_users(
     pool: web::Data<DbPool>,
 ) -> Result<HttpResponse, Error> {
     let users = web::block(move || {
         let mut conn = pool.get().unwrap();
         crate::schema::users::table
+            .select(User::as_select())
             .load::<User>(&mut conn)
     })
     .await?
@@ -35,7 +35,6 @@ pub async fn get_users(
     Ok(HttpResponse::Ok().json(users))
 }
 
-// Read (single user)
 pub async fn get_user(
     pool: web::Data<DbPool>,
     id: web::Path<i32>,
@@ -44,6 +43,7 @@ pub async fn get_user(
         let mut conn = pool.get().unwrap();
         crate::schema::users::table
             .find(id.into_inner())
+            .select(User::as_select())
             .get_result::<User>(&mut conn)
     })
     .await?
@@ -52,7 +52,6 @@ pub async fn get_user(
     Ok(HttpResponse::Ok().json(user))
 }
 
-// Update
 pub async fn update_user(
     pool: web::Data<DbPool>,
     id: web::Path<i32>,
@@ -65,6 +64,7 @@ pub async fn update_user(
                 crate::schema::users::name.eq(&updated_user.name),
                 crate::schema::users::email.eq(&updated_user.email),
             ))
+            .returning(User::as_select())
             .get_result::<User>(&mut conn)
     })
     .await?
@@ -73,7 +73,6 @@ pub async fn update_user(
     Ok(HttpResponse::Ok().json(user))
 }
 
-// Delete
 pub async fn delete_user(
     pool: web::Data<DbPool>,
     id: web::Path<i32>,

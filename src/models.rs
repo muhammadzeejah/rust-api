@@ -2,12 +2,13 @@ use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use crate::schema::users;
 
-#[derive(Queryable, Serialize)]
+#[derive(Debug, Queryable, Selectable, Insertable, Serialize)]
+#[diesel(table_name = users)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct User {
     pub id: i32,
     pub name: String,
     pub email: String,
-    pub created_at: chrono::NaiveDateTime,
 }
 
 #[derive(Insertable, Deserialize)]
