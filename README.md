@@ -52,13 +52,13 @@ sudo service postgresql start
 brew services start postgresql
 ```
 
-2. Create database (optional - default 'postgres' database can be used):
+2. Create database:
 ```bash
 # Access PostgreSQL
 psql -U postgres
 
 # In psql console
-CREATE DATABASE your_database_name;
+CREATE DATABASE users;
 \q
 ```
 
@@ -120,9 +120,7 @@ Test the API using curl or Postman:
 
 ### Create User
 ```bash
-curl -X POST http://localhost:8080/api/users \
--H "Content-Type: application/json" \
--d '{"name":"John Doe","email":"john@example.com"}'
+curl -X POST http://localhost:8080/api/users -H "Content-Type: application/json" -d "{\"name\":\"John Doe\",\"email\":\"john@example.com\"}"
 ```
 
 ### Get All Users
